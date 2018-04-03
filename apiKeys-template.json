@@ -1,0 +1,5 @@
+apiKeys = {
+  "mapboxglAccessToken": "",
+  "mapboxglStyle": "mapbox://styles/",
+  "openWeatherMapApiKey": ""
+};
