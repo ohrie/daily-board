@@ -22,7 +22,7 @@
       <span class="time">{{currentTime}}</span>
     </div>
     <div id="grid">
-      <div v-for="tile in tiles" class="tileContainer"><span class="tile"><h2>{{ tile.heading }}</h2>{{ tile.content }}</span></div>
+      <div v-for="tile in tiles" class="tileContainer" v-bind:class="{ big: tile.isBig }"><span class="tile"><h2>{{ tile.heading }}</h2>{{ tile.content }}</span></div>
     </div>
   </div>
 </body>
@@ -36,13 +36,16 @@ var app = new Vue({
       {heading: 'Public Transport', content:''},
       {heading: 'Twitter', content:''},
       {heading: 'Weather', content:''},
-      {heading: 'Calendar', content:''}
+      {heading: 'Calendar', content:''},
+      {heading: 'Pollen', content:''},
+      {heading: 'Air Pollution', content:''},
+      {heading: 'Traffic', content:'', isBig: true}
     ]
   },
   methods: {
     updateCurrentDateAndTime(){
       this.currentDate = moment().format('Do MMMM YYYY');
-      this.currentTime = moment().format('h:mm:ss');
+      this.currentTime = moment().format('LTS');
     }
   },
   created() {
