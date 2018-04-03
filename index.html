@@ -13,6 +13,10 @@
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' />
+
   <link href="main.css" rel="stylesheet">
 </head>
 <body>
@@ -22,7 +26,7 @@
       <span class="time">{{currentTime}}</span>
     </div>
     <div id="grid">
-      <div v-for="tile in tiles" class="tileContainer" v-bind:class="{ big: tile.isBig }"><span class="tile"><h2>{{ tile.heading }}</h2>{{ tile.content }}</span></div>
+      <div v-for="tile in tiles" class="tileContainer" v-bind:class="{ big: tile.isBig }"><span class="tile"><h2>{{ tile.heading }}</h2>{{ tile.content }}<span v-html="tile.mapHtml"></span></span></div>
     </div>
   </div>
 </body>
@@ -33,13 +37,13 @@ var app = new Vue({
     currentDate: null,
     currentTime: null,
     tiles:[
-      {heading: 'Public Transport', content:''},
-      {heading: 'Twitter', content:''},
-      {heading: 'Weather', content:''},
-      {heading: 'Calendar', content:''},
-      {heading: 'Pollen', content:''},
-      {heading: 'Air Pollution', content:''},
-      {heading: 'Traffic', content:'', isBig: true}
+      {heading: 'Public Transport', content:'', mapHtml:''},
+      {heading: 'Twitter', content:'', mapHtml:''},
+      {heading: 'Weather', content:'', mapHtml:''},
+      {heading: 'Calendar', content:'', mapHtml:''},
+      {heading: 'Pollen', content:'', mapHtml:''},
+      {heading: 'Air Pollution', content:'', mapHtml:''},
+      {heading: 'Traffic', content:'', mapHtml:"<div id='map'></div>", isBig: true}
     ]
   },
   methods: {
@@ -57,7 +61,7 @@ var app = new Vue({
     .then(function (response) {
       console.log("Weather data: " + response.data.main.temp);
       weatherObj = app.tiles[2];
-      weatherObj.content = response.data.main.temp + '°C';
+      weatherObj.content = response.data.main.temp + '°C ' + response.data.weather[0].description;
       app.$set(app.tiles, 2, weatherObj);
     })
     .catch(function (error) {
@@ -66,5 +70,16 @@ var app = new Vue({
 
   }
 })
+</script>
+<script>
+// Insert accessToken and style
+mapboxgl.accessToken = 'accessToken';
+var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/user/styleid', //stylesheet location
+    center: [13.739, 51.053], // starting position
+    zoom: 9, // starting zoom
+    hash: false // Add hash to fragment identifier
+});
 </script>
 </html>
