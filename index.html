@@ -9,50 +9,11 @@
   <script src="https://unpkg.com/moment@2.22.0/locale/de.js"></script>
 
   <!-- Axios - REST Api Requesting -->
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/axios@0.18.0/dist/axios.js"></script>
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
-  <style>
-  body{
-    background-color: #22224a;
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-  }
-  #today{
-    height: 5rem;
-    background-color: #35355e;
-    width: 100%;
-    color: white;
-    text-align: center;
-    padding: 1rem;
-  }
-  #today .date{
-    font-size: 2.5rem;
-    font-weight: 700;
-  }
-  #today .time{
-    font-size: 1.5rem
-  }
-  #grid{
-    display: flex;
-    flex-wrap: wrap;
-    box-sizing: border-box;
-  }
-  #grid .tile{
-    padding: 15px;
-    box-shadow: 0px 0px 80px 0px rgba(0,0,0,0.75);
-    background-color: #1d49ad;
-    color: #c3c3c3;
-    display: block;
-    height: 100px;
-  }
-  #grid .tileContainer{
-    box-sizing: border-box;
-    padding: 2rem 1rem;
-    width: 25%;
-  }
-  </style>
+  <link href="main.css" rel="stylesheet">
 </head>
 <body>
   <div id="app">
@@ -61,7 +22,7 @@
       <span class="time">{{currentTime}}</span>
     </div>
     <div id="grid">
-      <div v-for="tile in tiles" class="tileContainer"><span class="tile">{{ tile.content }}</span></div>
+      <div v-for="tile in tiles" class="tileContainer"><span class="tile"><h2>{{ tile.heading }}</h2>{{ tile.content }}</span></div>
     </div>
   </div>
 </body>
@@ -72,10 +33,10 @@ var app = new Vue({
     currentDate: null,
     currentTime: null,
     tiles:[
-      {content: 'Public Transport'},
-      {content: 'Twitter'},
-      {content: 'Weather'},
-      {content: 'Calendar'}
+      {heading: 'Public Transport', content:''},
+      {heading: 'Twitter', content:''},
+      {heading: 'Weather', content:''},
+      {heading: 'Calendar', content:''}
     ]
   },
   methods: {
@@ -87,8 +48,19 @@ var app = new Vue({
   created() {
     moment.locale('de');
     this.currentDate = moment().format('Do MMMM YYYY');
-    this.currentTime = moment().format('h:mm:ss');
+    this.currentTime = moment().format('LTS');
     setInterval(() => this.updateCurrentDateAndTime(), 1*1000)
+    axios.get('https://api.openweathermap.org/data/2.5/weather?id=2935020&appid=478ad8b9a445f3d46f7b052ab49d6a72&units=metric')
+    .then(function (response) {
+      console.log("Weather data: " + response.data.main.temp);
+      weatherObj = app.tiles[2];
+      weatherObj.content = response.data.main.temp + '°C';
+      app.$set(app.tiles, 2, weatherObj);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
   }
 })
 </script>
