@@ -4,7 +4,6 @@ body{
   font-family: 'Roboto', sans-serif;
 }
 #today{
-  height: 5rem;
   background-color: #35355e;
   width: 100%;
   color: white;
@@ -31,6 +30,13 @@ body{
   color: #c3c3c3;
   display: block;
   min-height: 100px;
+}
+#grid .tile .owf{
+  font-size: 4em;
+  display: block;
+}
+#grid .content.center {
+  text-align: center;
 }
 #grid .tileContainer{
   box-sizing: border-box;

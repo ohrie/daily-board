@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>Dashboard</title>
   <!-- development version, includes helpful console warnings -->
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue@2.5.16/dist/vue.js"></script>
   <script src="https://unpkg.com/moment@2.22.0/moment.js"></script>
   <script src="https://unpkg.com/moment@2.22.0/locale/de.js"></script>
 
@@ -17,9 +17,10 @@
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
 
   <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js'></script>
-  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' />
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet'>
 
-  <link href="main.css" rel="stylesheet">
+  <link href="css/main.css" rel="stylesheet">
+  <link href="css/owfont-regular.css" rel="stylesheet">
 </head>
 <body>
   <div id="app">
@@ -28,7 +29,15 @@
       <span class="time">{{currentTime}}</span>
     </div>
     <div id="grid">
-      <div v-for="tile in tiles" class="tileContainer" v-bind:class="{ big: tile.isBig }"><div class="tile"><h2>{{ tile.heading }}</h2>{{ tile.content }}<div v-html="tile.mapHtml"></div></div></div>
+      <div v-for="tile in tiles" class="tileContainer" v-bind:class="{ big: tile.isBig }">
+        <div class="tile"><h2 v-if="tile.heading">{{ tile.heading }}</h2>
+          <span class="content" v-bind:class="{ 'center' : tile.isCenter }">
+            <i v-if="tile.icon" v-bind:class="tile.icon"></i>
+            <div v-if="tile.mapHtml" v-html="tile.mapHtml"></div>
+            <p v-if="tile.content">{{ tile.content }}</p>
+          </span>
+        </div>
+      </div>
     </div>
   </div>
 </body>
@@ -41,11 +50,11 @@ var app = new Vue({
     tiles:[
       {heading: 'Public Transport', content:''},
       {heading: 'Twitter', content:''},
-      {heading: 'Weather', content:''},
+      {heading: 'Weather', content:'', icon:'', isCenter:true},
       {heading: 'Calendar', content:''},
       {heading: 'Pollen', content:''},
       {heading: 'Air Pollution', content:''},
-      {heading: 'Traffic', content:'', mapHtml:"<div id='map'></div>", isBig: true}
+      {content:'', mapHtml:"<div id='map'></div>", isBig: true}
     ]
   },
   methods: {
@@ -62,8 +71,9 @@ var app = new Vue({
     axios.get('https://api.openweathermap.org/data/2.5/weather?id=2935020&appid='+ apiKeys.openWeatherMapApiKey +'&units=metric')
     .then(function (response) {
       console.log("Weather data: " + response.data.main.temp);
-      weatherObj = app.tiles[2];
+      var weatherObj = app.tiles[2];
       weatherObj.content = response.data.main.temp + '°C ' + response.data.weather[0].description;
+      weatherObj.icon = 'owf owf-' + response.data.weather[0].id;
       app.$set(app.tiles, 2, weatherObj);
     })
     .catch(function (error) {
@@ -79,7 +89,7 @@ var map = new mapboxgl.Map({
     container: 'map', // container id
     style: apiKeys.mapboxglStyle, //stylesheet location
     center: [13.739, 51.053], // starting position
-    zoom: 9, // starting zoom
+    zoom: 11, // starting zoom
     hash: false // Add hash to fragment identifier
 });
 </script>
