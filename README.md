@@ -4,11 +4,13 @@
 Shows everyday information for personal use.
 Built/Experimenting with [Vue.js](http://vuejs.org/)
 
-Planned tiles:
+## Working tiles
+* Current Weather
+* Traffic Mapbox Map
+
+## Planned tiles:
 * Pollen
-* Weather
 * Public Transport
-* Live Traffic Map
 * Live Air Pollution
 
 Licensed under MIT-License, see [LICENSE](LICENSE).
